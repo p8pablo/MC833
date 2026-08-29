@@ -1,46 +1,39 @@
 from socket import *
-import sys # In order to terminate the program
-HOST = ''
+import sys  # In order to terminate the program
+
+HOST = ""
 PORT = 50007
 
 s = socket(AF_INET, SOCK_STREAM)
-#Prepare a sever socket
+# Prepare a sever socket
 
-s.bind((HOST,PORT))
+s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)  # Reuse of address
+
+s.bind((HOST, PORT))
 s.listen(1)
-print('Ready to serve...')
-conn, addr = s.accept()
+print("Ready to serve...")
 
-with conn:
-    print(f'Connection established {conn}')
 
-    while True:
-        #Establish the connection
+while True:
+    # Establish the connection
+    conn, addr = s.accept()
 
+    with conn:
+        print(f"Connection established {addr}")
         try:
-            conn.sendall(b'Hello World')
             message = conn.recv(1024)
-            if not message: break
-            print('Received', repr(message))
-            # filename = message.split()[1]
-            # f = open(filename[1:])
-            # output_data = f
-            #Send one HTTP header line into socket
+            if not message:
+                continue
+            print("Received", repr(message))
 
+            http = "HTTP/1.1 200 OK\r\n\r\n"
+            content = "<h1>Hello World!</h1>"
 
-            #Send the content of the requested file to the client
+            return_message = http + content
 
-            # for i in range(0, len(outputdata)):
-            #    conn.send(outputdata[i].encode())
-            # conn.send("\r\n".encode())
-
-            conn.close()
+            conn.sendall(return_message.encode())
         except IOError:
-            #Send response message for file not found
-            print(f'Unexpected error: {IOError}')
+            # Send response message for file not found
+            print(f"Unexpected error: {IOError}")
 
-            #Close client socket
-
-
-    s.close()
-    sys.exit()#Terminate the program after sending the corresponding data
+            # Close client socket
