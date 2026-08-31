@@ -15,21 +15,26 @@ def client(conn, addr):
         print("Received", repr(message))
 
         filename = message.split()[1]
-        f = open(filename[1:], "rb")
+        f = open(filename[1:])
 
-        http_status = "HTTP/1.1 200 OK\r\n\r\n".encode()
+        if filename == "/":
+            filename = "/index.html"
+
+        http_status = "HTTP/1.1 200 OK\r\n\r\n"
         content = f.read()
 
         return_message = http_status + content
 
-        conn.sendall(return_message)
+        for i in range(0, len(return_message)):
+            conn.send(return_message[i].encode())
+            conn.send("\r\n".encode())
         return
 
     except Exception:
         # Send response message for file not found
         http_status = "HTTP/1.1 400 Not Found\r\n\r\n".encode()
         print(f"Unexpected error: {Exception}")
-        conn.sendall(http_status)
+        conn.send(http_status)
 
     finally:
         # Close client socket
