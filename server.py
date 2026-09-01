@@ -10,29 +10,28 @@ def client(conn, addr):
     try:
         print(f"Connection established {addr}")
         message = conn.recv(1024)
+        message = message.decode()
         if not message:
             return
         print("Received", repr(message))
 
         filename = message.split()[1]
-        f = open(filename[1:])
-
         if filename == "/":
             filename = "/index.html"
+
+        f = open(filename[1:], "rb")
 
         http_status = "HTTP/1.1 200 OK\r\n\r\n"
         content = f.read()
 
-        return_message = http_status + content
+        return_message = http_status.encode() + content
 
-        for i in range(0, len(return_message)):
-            conn.send(return_message[i].encode())
-            conn.send("\r\n".encode())
+        conn.sendall(return_message)
         return
 
     except Exception:
         # Send response message for file not found
-        http_status = "HTTP/1.1 400 Not Found\r\n\r\n".encode()
+        http_status = "HTTP/1.1 404 Not Found\r\n\r\n".encode()
         print(f"Unexpected error: {Exception}")
         conn.send(http_status)
 

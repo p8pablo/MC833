@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <title>Pesquisador de GIFs</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Pesquisador de GIFs</h1>
+            <p>Digite o nome do GIF</p>
+            <input
+                type="text"
+                id="busca"
+                placeholder="Ex: gato, cafe..."
+                autofocus
+            />
+            <button onclick="buscarGif()">Buscar GIF</button>
+        </div>
+        <script>
+            function buscarGif() {
+                let busca = document.getElementById("busca").value.trim();
+                window.location.href = "/" + busca;
+            }
+        </script>
+    </body>
+</html>
