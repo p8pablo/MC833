@@ -18,6 +18,9 @@
         <script>
             function buscarGif() {
                 let busca = document.getElementById("busca").value.trim();
+                if (busca && !busca.endsWith(".gif")) {
+                    busca += ".gif";
+                }
                 window.location.href = "/" + busca;
             }
         </script>
