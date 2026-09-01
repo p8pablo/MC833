@@ -9,19 +9,19 @@
             <p>Digite o nome do GIF</p>
             <input
                 type="text"
-                id="busca"
+                id="search"
                 placeholder="Ex: gato, cafe..."
                 autofocus
             />
-            <button onclick="buscarGif()">Buscar GIF</button>
+            <button onclick="searchGif()">Buscar GIF</button>
         </div>
         <script>
-            function buscarGif() {
-                let busca = document.getElementById("busca").value.trim();
-                if (busca && !busca.endsWith(".gif")) {
-                    busca += ".gif";
+            function searchGif() {
+                let search = document.getElementById("search").value.trim();
+                if (search && !search.endsWith(".gif")) {
+                    search += ".gif";
                 }
-                window.location.href = "/" + busca;
+                window.location.href = "/" + search;
             }
         </script>
     </body>
