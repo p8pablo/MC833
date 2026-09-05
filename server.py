@@ -4,6 +4,7 @@ import sys  # In order to terminate the program
 
 HOST = ""
 PORT = 50007
+TIMEOUT_SECONDS = 30
 
 
 def client(conn, addr):
@@ -45,11 +46,24 @@ s = socket(AF_INET, SOCK_STREAM)
 s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)  # Reuse of address
 s.bind((HOST, PORT))
 s.listen(5)
+s.settimeout(TIMEOUT_SECONDS)
 print("Ready to serve...")
 
 
-while True:
-    # Establish the connection
-    conn, addr = s.accept()
-    thread = threading.Thread(target=client, args=(conn, addr))
-    thread.start()
+try:
+    while True:
+        try:
+            # Establish the connection
+            conn, addr = s.accept()
+            thread = threading.Thread(target=client, args=(conn, addr))
+            thread.start()
+        except timeout:
+            print(f"No client connected in {TIMEOUT_SECONDS}. Closing server")
+            break
+except KeyboardInterrupt:
+    print("Closing server due to manual interruption")
+
+finally:
+    s.close()
+    print("Server closed.")
+    sys.exit(0)
