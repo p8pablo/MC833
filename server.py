@@ -16,10 +16,12 @@ def client(conn, addr):
             return
         print("Received", repr(message))
 
+        # Parse request file
         filename = message.split()[1]
         if filename == "/":
             filename = "/index.html"
 
+        # Read in binary mode
         f = open(filename[1:], "rb")
 
         http_status = "HTTP/1.1 200 OK\r\n\r\n"
@@ -43,7 +45,7 @@ def client(conn, addr):
 
 s = socket(AF_INET, SOCK_STREAM)
 # Prepare a sever socket
-s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)  # Reuse of address
+s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)  # Reuse of address (debug improvement)
 s.bind((HOST, PORT))
 s.listen(5)
 s.settimeout(TIMEOUT_SECONDS)
@@ -51,9 +53,10 @@ print("Ready to serve...")
 
 
 try:
+    # Loop listener of connections
     while True:
         try:
-            # Establish the connection
+            # Establish the connection with thread handling
             conn, addr = s.accept()
             thread = threading.Thread(target=client, args=(conn, addr))
             thread.start()
